@@ -1,0 +1,35 @@
+
+# Create project folder
+mkdir google-mini-engine
+cd google-mini-engine
+
+# Create essential files
+touch requirements.txt README.md main.py
+
+# Create folder structure
+#for linux
+mkdir -p src/{core,crawler,indexer,query,ranking,storage,utils}
+#for window power shell , it will be like,
+mkdir src
+mkdir src\core,src\crawler,src\indexer,src\query,src\ranking,src\storage,src\utils
+
+#for linux
+mkdir -p data/{raw,processed,indexes}
+
+#for window power shell , it will be like,
+mkdir data
+mkdir data\raw,data\processed,data\indexes
+
+#for linux  
+mkdir -p tests/{unit,integration}
+
+#for window power shell , it will be like,
+mkdir tests
+mkdir tests\unit,tests\integration
+
+# Create scripts folder
+#for linux
+mkdir -p scripts
+
+#for window power shell , it will be like,
+mkdir scripts

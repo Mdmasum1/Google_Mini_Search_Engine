@@ -1,0 +1,21 @@
+== By the end of the week 1:
+--1. Inverted index with skip pointers
+--2. Boolean queries(AND, OR, NOT)
+--3. Index 1000 + documents
+--4.Query response less < 50 ms
+--5. Save/load from the disk
+--6. Basic command line interface
+
+=====================================
+
+COMMON PITFALLS TO AVOID:
+
+1. Don't overcomplicate: Start with simple tokenization
+
+2. Test with small data first: 100 documents, not 1 million
+
+3. Write tests from day 1: pytest tests/
+
+4 Profile early: Find bottlenecks before scaling
+
+5. Document your code: You'll thank yourself later
