@@ -47,5 +47,60 @@ class InvertedIndex:
         self.doc_lengths: Dict[int, int] = {}
         
         
+    def add_document(self, doc_id:int, text: str, metadata: Dict = None):
+        """
+        Add a document to the index
+        This is where the magic happens !
+        --Actually  it Tokenize, build posting list, update stats
+        
+        Args:
+            doc_id (int): Unique document ID
+            text (str): Document text
+            metadata (Dict, optional): Additional info
+        
+        """
+        #Tokenize text
+        tokens = self._tokenize(text)
+        self.total_terms += len(tokens)
+        
+        #Store document metadata
+        self.doc_metadata[doc_id] = metadata or {}
+        self.doc_lengths[doc_id] = len(tokens)
+        self.total_docs += 1
+        
+        #Process each token with its positon
+        for position, token in enumerate(tokens):
+            if token not in self.index:
+                self.index[token] = {
+                    'df': 0,
+                    'postings': [],
+                    'skip_pointers': []
+                }
+                
+            # Retrieve all documents (postings list) where this token appears
+            postings = self.index[token]['postings']
+            
+            # Check if we need to add to existing posting or create new
+            if not postings or postings[-1].doc_id != doc_id:
+                # New posting for this document
+                posting = Posting(
+                    doc_id=doc_id,
+                    term_freq=1,
+                    positions=[position]
+                )
+                postings.append(posting)
+                self.index[token]['doc_freq'] += 1
+            else:
+                # Update existing posting
+                last_posting = postings[-1]
+                last_posting.term_freq += 1
+                last_posting.positions.append(position)
+            
+        
+        
+        
+        
+        
+        
         
         
