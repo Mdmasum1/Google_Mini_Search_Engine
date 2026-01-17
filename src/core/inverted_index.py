@@ -95,7 +95,35 @@ class InvertedIndex:
                 last_posting = postings[-1]
                 last_posting.term_freq += 1
                 last_posting.positions.append(position)
+      
+    def _tokenize(self, text:str):
+        #Basic tokenizer - I will enhance this later
+        
+        #convert to lowercase
+        text = text.lower()
+        
+        #Simple splitting(I will add better tokenication)
+        tokens = text.split()
+        current_token = []
+        
+        for char in text:
+            if char.isalnum():
+                current_token.append(char)
             
+            elif current_token:
+                #End of token
+                tokens.append(''.join(current_token))
+                current_token = []
+        
+        #Handle last token   
+        if current_token:
+            tokens.append(''.join(current_token))
+          
+        #return the list of tokens  
+        return tokens
+    
+                
+                  
         
         
         
