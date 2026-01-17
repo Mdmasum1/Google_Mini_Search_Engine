@@ -122,6 +122,33 @@ class InvertedIndex:
         #return the list of tokens  
         return tokens
     
+    def _add_skip_pointers(self, term:str):
+        '''
+        --add skip pointers to a posting list for a given term
+        Skip pointers allow faster intersection of posting lists
+        --or Add skip pointers to posting list
+        skip every sqrt(n)th posting for o(sqrt(n)) intersection
+        
+        Args:
+            term (str): Term to add skip pointers to
+        '''
+        postings = self.index[term]['postings']
+        n = len(postings)
+        skip_every = max(1, int(math.sqrt(n)))
+        
+        skip_pointers = {} #position -> skip pointer
+        for i in range(0, n, skip_every):
+            if i + skip_every < n:
+                skip_pointers[i] = i + skip_every
+            else:
+                #Last pointer points to end
+                skip_pointers[i] = n - 1
+        
+        #Update index with skip pointers
+        self.index[term]['skip_pointers'] = skip_pointers
+        
+        
+    
                 
                   
         
