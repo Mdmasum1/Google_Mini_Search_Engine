@@ -147,8 +147,44 @@ class InvertedIndex:
         #Update index with skip pointers
         self.index[term]['skip_pointers'] = skip_pointers
         
+    def intersect(self, term1: str, term2: str) -> List[int]:
+        """
+        Intersect two posting lists using skip pointers
+        This is the CORE algorithm you need to master
+        """
+        if term1 not in self.index or term2 not in self.index:
+            return []
         
-    
+        result = []
+        p1 = self.index[term1]['postings']
+        p2 = self.index[term2]['postings']
+        
+        i = j = 0
+        skip1 = self.index[term1]['skip_pointers']
+        skip2 = self.index[term2]['skip_pointers']
+        
+        while i < len(p1) and j < len(p2):
+            doc1 = p1[i].doc_id
+            doc2 = p2[j].doc_id
+            
+            if doc1 == doc2:
+                result.append(doc1)
+                i += 1
+                j += 1
+            elif doc1 < doc2:
+                # Use skip pointer if available and beneficial
+                if i in skip1 and p1[skip1[i]].doc_id <= doc2:
+                    i = skip1[i]
+                else:
+                    i += 1
+            else:
+                if j in skip2 and p2[skip2[j]].doc_id <= doc1:
+                    j = skip2[j]
+                else:
+                    j += 1
+        
+        return result
+        
                 
                   
         
