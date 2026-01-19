@@ -184,6 +184,49 @@ class InvertedIndex:
                     j += 1
         
         return result
+    
+    def search_boolean(self, query: str) -> List[int]:
+        
+        """
+        Process boolean queries like: "apple AND fruit NOT pie"
+        """
+        # Simple query parser (you'll enhance this)
+        tokens = query.lower().split()
+        
+        if not tokens:
+            return []
+        
+        # Start with first term
+        result = set(self.get_doc_ids(tokens[0]))
+        
+        i = 1
+        while i < len(tokens):
+            operator = tokens[i].upper() if tokens[i].upper() in ['AND', 'OR', 'NOT'] else 'AND'
+            
+            if operator in ['AND', 'NOT']:
+                i += 1
+                if i >= len(tokens):
+                    break
+                
+                next_term = tokens[i]
+                next_docs = set(self.get_doc_ids(next_term))
+                
+                if operator == 'AND':
+                    result = result.intersection(next_docs)
+                else:  # NOT
+                    result = result.difference(next_docs)
+            else:  # OR
+                i += 1
+                if i >= len(tokens):
+                    break
+                
+                next_term = tokens[i]
+                next_docs = set(self.get_doc_ids(next_term))
+                result = result.union(next_docs)
+            
+            i += 1
+        
+        return sorted(list(result))
         
                 
                   
