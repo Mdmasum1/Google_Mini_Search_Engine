@@ -227,6 +227,58 @@ class InvertedIndex:
             i += 1
         
         return sorted(list(result))
+    
+    def get_doc_ids(self, term: str) -> List[int]:
+        """Get all document IDs containing the term"""
+        
+        if term not in self.index:
+            return []
+        
+        return [p.doc_id for p in self.index[term]['postings']]
+    
+    def get_posting_list(self, term: str) -> List[Posting]:
+        """Get the posting list for a term"""
+        return self.index.get(term, {}).get('postings', [])
+    
+    def save(self, filepath: str):
+        """Save the index to a disk file"""
+        with open(filepath, 'wb') as f:
+            pickle.dump({
+                'index': self.index,
+                'doc_metadata': self.doc_metadata,
+                'total_docs': self.total_docs,
+                'total_terms': self.total_terms,
+                'avg_doc_length': self.avg_doc_length,
+                'doc_lengths': self.doc_lengths
+            }, f)
+            
+    def load(self, filepath: str):
+        """Load the index from a disk file"""
+        with open(filepath, 'rb') as f:
+            data = pickle.load(f)
+            self.index = data['index']
+            self.doc_metadata = data['doc_metadata']
+            self.total_docs = data['total_docs']
+            self.total_terms = data['total_terms']
+            self.avg_doc_length = data['avg_doc_length']
+            self.doc_lengths = data['doc_lengths']
+            
+    def print_stats(self):
+        """Print index statistics"""
+        print(f"Total documents: {self.total_docs}")
+        print(f"Total terms: {self.total_terms}")
+        print(f"Average document length: {self.avg_doc_length}")
+        
+        #Show top 10 terms by document frequency
+        term_dfs = [(term, data['doc_freq']) for term, data in self.index.items()]
+        term_dfs.sort(key=lambda x: x[1], reverse=True)
+        
+        
+        print("\nTop 10 terms by document frequency:")
+        for term, df in term_dfs[:10]:
+            print(f"  {term}: {df} documents")
+        
+        
         
                 
                   
