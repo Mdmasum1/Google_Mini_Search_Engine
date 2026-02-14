@@ -26,3 +26,18 @@ class BM25:
         self.total_docs = 0
         self.doc_freqs: Dict[str, int] = {}
         
+    
+    def fit(self, index):
+        """
+        fit index to the model 
+        prepare BM25 with index statistics 
+        Args:
+            index (InvertedIndex): Inverted index object
+        """
+        self.avg_doc_length = index.avg_doc_length
+        self.doc_lengths = index.doc_lengths
+        self.total_docs = index.total_docs
+        
+        #Caculate document frequencies for all terms
+        for term, data in index.index.items():
+            self.doc_freqs[term] = data['doc_freq']
